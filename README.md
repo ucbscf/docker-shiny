@@ -1,4 +1,4 @@
-# shiny
+# Load-balanced Shiny Server Container Structure.
 Shiny Server load-balancing docker containers.
 
 Copy respective container directory to an arbitrary location into one or more machines (e.g. cp shinyserver /root/dockerfiles).
