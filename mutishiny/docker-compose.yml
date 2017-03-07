@@ -6,7 +6,6 @@ services:
       context: .
       args:
         - SITE_SHINY_USER_ID
-    image: scf/shinyserver
     ports:
       - "8838:3838"
     container_name: scf_shinyserver
