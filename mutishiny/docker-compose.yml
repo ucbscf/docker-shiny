@@ -8,7 +8,7 @@ services:
         - SITE_SHINY_USER_ID
     ports:
       - "8838:3838"
-    container_name: scf_shinyserver
+    container_name: scf_shinyserver1
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
@@ -25,7 +25,7 @@ services:
         - SITE_SHINY_USER_ID
     ports:
       - "8839:3838"
-    container_name: scf_shinyserver
+    container_name: scf_shinyserver2
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
