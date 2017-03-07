@@ -34,3 +34,37 @@ services:
       driver: syslog
       options:
         syslog-facility: "local7"
+
+  shinyserver_3:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8840:3838"
+    container_name: scf_shinyserver3
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
+
+  shinyserver_4:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8841:3838"
+    container_name: scf_shinyserver4
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
