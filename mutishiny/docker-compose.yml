@@ -24,7 +24,7 @@ services:
       args:
         - SITE_SHINY_USER_ID
     ports:
-      - "8838:3838"
+      - "8839:3838"
     container_name: scf_shinyserver
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
