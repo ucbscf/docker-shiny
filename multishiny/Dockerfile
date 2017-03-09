@@ -132,7 +132,7 @@ RUN chmod 777 /var/run/shiny-server
 RUN chmod 777 /var/log/shiny-server
 RUN chmod 777 /var/lib/shiny-server
 RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
-RUN ln -sf /dev/stdout /var/log/shiny-access.log
+#RUN ln -sf /dev/stdout /var/log/shiny-access.log
 
 #volume for Shiny Apps and static assets. Here is the folder for index.html(link) and sample apps.
 VOLUME /srv/shiny-server
