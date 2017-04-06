@@ -113,6 +113,7 @@ RUN Rscript -e "library('devtools'); install_github('rstudio/tutor')"
 RUN Rscript -e "library('devtools'); install_github('dtkaplan/checkr')"
 RUN Rscript -e "library('devtools'); install_github('DataComputing/DataComputing')"
 RUN Rscript -e "install.packages(c('leaflet'), repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('XML', repos='${RCRAN}')" 
 #RUN Rscript -e "install.packages(c('printr'),type='source', repos=c('https://yihui.name/xran', 'http://cran.rstudio.com'))"
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf

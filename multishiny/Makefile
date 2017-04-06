@@ -1,4 +1,4 @@
 rebuild:
-	docker-compose stop
 	docker-compose build
+	docker-compose stop
 	docker-compose up -d
