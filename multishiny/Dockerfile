@@ -112,33 +112,35 @@ RUN Rscript -e "install.packages(c('statisticalModeling'), repos=c('https://cran
 RUN Rscript -e "library('devtools'); install_github('rstudio/tutor')"
 RUN Rscript -e "library('devtools'); install_github('dtkaplan/checkr')"
 RUN Rscript -e "library('devtools'); install_github('DataComputing/DataComputing')"
-RUN Rscript -e "install.packages(c('leaflet'), repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('leaflet', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('XML', repos='${RCRAN}')" 
-#RUN Rscript -e "install.packages(c('printr'),type='source', repos=c('https://yihui.name/xran', 'http://cran.rstudio.com'))"
+RUN Rscript -e "install.packages('RCurl', repos='${RCRAN}')" 
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 ##startup scripts  
-#Pre-config scrip that maybe need to be run one time only when the container run the first time .. using a flag to don't 
-#run it again ... use for conf for service ... when run the first time ...
-RUN mkdir -p /etc/my_init.d
-RUN mkdir -p /var/log/cron/config
-RUN mkdir -p /var/lib/shiny-server
+#Pre-config scrip that maybe need to be run one time only when the container
+# run the first time .. using a flag to don't 
+# run it again ... use for conf for service ... when run the first time ...
+RUN mkdir -p /etc/my_init.d \
+	/var/log/cron/config \
+	/var/lib/shiny-server
 
 # Let's open up the logs within the container.
-RUN chown -R shiny:shiny /var/log/shiny-server
-RUN chown -R shiny:shiny /var/lib/shiny-server
-RUN chown -R shiny /var/run/shiny-server
-RUN chmod 777 /var/run/shiny-server
-RUN chmod 777 /var/log/shiny-server
-RUN chmod 777 /var/lib/shiny-server
+RUN chown -R shiny:shiny /var/log/shiny-server \
+	/var/lib/shiny-server \
+	/var/run/shiny-server
+RUN chmod 777 /var/run/shiny-server \
+	/var/log/shiny-server \
+	/var/lib/shiny-server
 RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
 
-#volume for Shiny Apps and static assets. Here is the folder for index.html(link) and sample apps.
+# Directory for shiny apps and static assets.
 VOLUME /srv/shiny-server
 
 # to allow access from outside of the container  to the container service
-# at that ports need to allow access from firewall if need to access it outside of the server. 
+# at that ports need to allow access from firewall if need to access it outside
+# of the server. 
 EXPOSE 3838
 
 # Set Shiny log level
