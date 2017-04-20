@@ -119,6 +119,10 @@ RUN Rscript -e "install.packages('DBI', repos='${RCRAN}')"
 RUN Rscript -e "install.packages('RSQLite', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('nycflights13', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('Lahman', repos='${RCRAN}')" 
+
+RUN apt-get update
+RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
+	libmariadb-client-lgpl-dev
 RUN Rscript -e "install.packages('RMySQL', repos='${RCRAN}')" 
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
