@@ -115,6 +115,11 @@ RUN Rscript -e "library('devtools'); install_github('DataComputing/DataComputing
 RUN Rscript -e "install.packages('leaflet', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('XML', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('RCurl', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('DBI', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('RSQLite', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('nycflights13', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('Lahman', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('RMySQL', repos='${RCRAN}')" 
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
