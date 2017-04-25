@@ -118,6 +118,12 @@ RUN Rscript -e "install.packages('RSQLite', repos='${RCRAN}')"
 RUN Rscript -e "install.packages('nycflights13', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('Lahman', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('RMySQL', repos='${RCRAN}')" 
+RUN Rscript -e "install.packages('ggdendro', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('rpart', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('statisticalModeling', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('rpart.plot', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('stats', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('mosaicData', repos='${R_REPO}')"
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
