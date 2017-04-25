@@ -26,15 +26,12 @@ RUN echo -n | openssl s_client -connect mran.revolutionanalytics.com:443 | \
 
 RUN update-ca-certificates
 
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
+    && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+
 # Oracle Java 8 repo
 RUN add-apt-repository -y ppa:webupd8team/java
 
-RUN ( \
-	echo debconf shared/accepted-oracle-license-v1-1 select true ; \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true ; \
-	) | debconf-set-selections
-
-# Packages, please note that R version should be 3.3.2 version
 RUN apt-get update
 
 RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
@@ -74,39 +71,43 @@ RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 
 RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
 
-ENV RCRAN=${R_REPO}
-
-# Install shiny
+# This is Shiny stuff, leave this alone
 RUN R -e "install.packages('shiny', repos='http://cran.rstudio.com/')" && \
 	update-locale && \
 	wget https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.1.834-amd64.deb && \
 	dpkg -i --force-depends shiny-server-1.5.1.834-amd64.deb && \
 	rm shiny-server-1.5.1.834-amd64.deb && \
-	mkdir -p /etc/service/shiny /var/run/shiny-server \
-		/srv/shiny-server/examples && \
-	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. 
+	mkdir -p /srv/shiny-server; sync  && \
+	mkdir -p /etc/service/shiny; sync  && \
+	mkdir -p /var/run/shiny-server; sync  && \
+	mkdir -p  /srv/shiny-server/examples; sync && \
+	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. && \
+	;
 
-RUN Rscript -e "install.packages('formatR', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('devtools', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('uuid', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('rmarkdown', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('fields', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('ggplot2', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('grid', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('gridExtra', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('maps', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('maptools', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('ncdf4', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('raster', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('RColorBrewer', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('reshape', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('reshape2', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('rgdal', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('sp', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('mosaicData', repos='${RCRAN}')"
-RUN Rscript -e "install.packages('rprojroot',repos=c('https://cran.cnr.berkeley.edu'))"
-RUN Rscript -e "install.packages('googlesheets',repos=c('https://cran.cnr.berkeley.edu'))"
-RUN Rscript -e "install.packages('statisticalModeling', repos=c('https://cran.cnr.berkeley.edu'))"
+#ENV RCRAN="http://cran.rstudio.com/"
+ENV RCRAN=${R_REPO}
+
+RUN Rscript -e "install.packages(c('formatR'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('devtools'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('uuid'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('rmarkdown'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('fields'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('ggplot2'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('grid'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('gridExtra'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('maps'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('maptools'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('ncdf4'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('raster'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('RColorBrewer'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('reshape'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('reshape2'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('rgdal'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('sp'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('mosaicData'), repos='${RCRAN}')"
+RUN Rscript -e "install.packages(c('rprojroot'),repos=c('https://cran.cnr.berkeley.edu'))"
+RUN Rscript -e "install.packages(c('googlesheets'),repos=c('https://cran.cnr.berkeley.edu'))"
+RUN Rscript -e "install.packages(c('statisticalModeling'), repos=c('https://cran.cnr.berkeley.edu'))"
 RUN Rscript -e "library('devtools'); install_github('rstudio/tutor')"
 RUN Rscript -e "library('devtools'); install_github('dtkaplan/checkr')"
 RUN Rscript -e "library('devtools'); install_github('DataComputing/DataComputing')"
@@ -118,12 +119,12 @@ RUN Rscript -e "install.packages('RSQLite', repos='${RCRAN}')"
 RUN Rscript -e "install.packages('nycflights13', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('Lahman', repos='${RCRAN}')" 
 RUN Rscript -e "install.packages('RMySQL', repos='${RCRAN}')" 
-RUN Rscript -e "install.packages('ggdendro', repos='${R_REPO}')"
-RUN Rscript -e "install.packages('rpart', repos='${R_REPO}')"
-RUN Rscript -e "install.packages('statisticalModeling', repos='${R_REPO}')"
-RUN Rscript -e "install.packages('rpart.plot', repos='${R_REPO}')"
-RUN Rscript -e "install.packages('stats', repos='${R_REPO}')"
-RUN Rscript -e "install.packages('mosaicData', repos='${R_REPO}')"
+RUN Rscript -e "install.packages('ggdendro', repos='${RCRAN}')"
+RUN Rscript -e "install.packages('rpart', repos='${RCRAN}')"
+RUN Rscript -e "install.packages('statisticalModeling', repos='${RCRAN}')"
+RUN Rscript -e "install.packages('rpart.plot', repos='${RCRAN}')"
+RUN Rscript -e "install.packages('stats', repos='${RCRAN}')"
+RUN Rscript -e "install.packages('mosaicData', repos='${RCRAN}')"
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
@@ -142,8 +143,8 @@ RUN chmod 777 /var/run/shiny-server \
 	/var/lib/shiny-server
 RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
 
-RUN apt-get clean \
-	&& rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+RUN apt-get clean && \
+	rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 # Directory for shiny apps and static assets.
 VOLUME /srv/shiny-server
