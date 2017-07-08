@@ -13,7 +13,8 @@ RUN set -e
 RUN apt-get -y --quiet --no-install-recommends install apt-transport-https
 
 ENV R_REPO="https://mran.revolutionanalytics.com/snapshot/2017-02-16"
-ENV MRAN_KEY="06F90DE5381BA480"
+#ENV MRAN_KEY="06F90DE5381BA480"
+ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
 ENV U_CODE="jessie-cran3"
 
@@ -36,28 +37,20 @@ RUN apt-get update
 
 RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 	build-essential \
+	debconf-utils \	
 	gcc \
 	curl \
 	wget \
 	pkg-config \
+	gdebi-core \  
+	sudo \
+	cron \
 	libcurl4-openssl-dev \
+	libopenblas-base \
 	libreadline-dev \
 	libssl-dev \
 	libzmq3-dev \
-	r-base-core \
-	r-base-dev \
-	r-base \
-	r-recommended \
-	libopenblas-base \
-	r-cran-evaluate \
-	r-cran-digest \
-	r-cran-testthat \
-	littler \
-	gdebi-core \  
-	debconf-utils \	
 	libapparmor1 \
-	sudo \
-	cron \
 	libssl1.0.0 \
 	libssl-dev \
 	libxml2-dev \
@@ -65,11 +58,24 @@ RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 	libcurl4-openssl-dev \
 	lmodern \
 	libmariadb-client-lgpl-dev \
-	oracle-java7-installer \
+	;
+
+RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
+	r-base-core \
+	r-base-dev \
+	r-base \
+	r-recommended \
+	r-cran-evaluate \
+	r-cran-digest \
+	r-cran-testthat \
+	littler \
+	;
+
+RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 	oracle-java8-installer \
 	;
 
-RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
+RUN if [ -z "$SHINY_USER_ID" ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
 
 # This is Shiny stuff, leave this alone
 RUN R -e "install.packages('shiny', repos='http://cran.rstudio.com/')" && \
@@ -77,12 +83,7 @@ RUN R -e "install.packages('shiny', repos='http://cran.rstudio.com/')" && \
 	wget https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.1.834-amd64.deb && \
 	dpkg -i --force-depends shiny-server-1.5.1.834-amd64.deb && \
 	rm shiny-server-1.5.1.834-amd64.deb && \
-	mkdir -p /srv/shiny-server; sync  && \
-	mkdir -p /etc/service/shiny; sync  && \
-	mkdir -p /var/run/shiny-server; sync  && \
-	mkdir -p  /srv/shiny-server/examples; sync && \
-	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. && \
-	;
+	mkdir -p /srv/shiny-server /etc/service/shiny /var/run/shiny-server
 
 #ENV RCRAN="http://cran.rstudio.com/"
 ENV RCRAN=${R_REPO}
@@ -141,7 +142,7 @@ RUN chown -R shiny:shiny /var/log/shiny-server \
 RUN chmod 777 /var/run/shiny-server \
 	/var/log/shiny-server \
 	/var/lib/shiny-server
-RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
+#RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
 
 RUN apt-get clean && \
 	rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
