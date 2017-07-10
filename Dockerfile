@@ -26,11 +26,11 @@ RUN echo -n | openssl s_client -connect mran.revolutionanalytics.com:443 | \
 
 RUN update-ca-certificates
 
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
-    && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-
 # Oracle Java 8 repo
 RUN add-apt-repository -y ppa:webupd8team/java
+
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
+    && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
 
 RUN apt-get update
 
@@ -65,9 +65,11 @@ RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 	libcurl4-openssl-dev \
 	lmodern \
 	libmariadb-client-lgpl-dev \
-	oracle-java7-installer \
-	oracle-java8-installer \
-	;
+    ;
+
+#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java7-installer 
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java8-installer 
 
 RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
 
@@ -81,8 +83,8 @@ RUN R -e "install.packages('shiny', repos='http://cran.rstudio.com/')" && \
 	mkdir -p /etc/service/shiny; sync  && \
 	mkdir -p /var/run/shiny-server; sync  && \
 	mkdir -p  /srv/shiny-server/examples; sync && \
-	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. && \
-	;
+	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. \
+    ;
 
 #ENV RCRAN="http://cran.rstudio.com/"
 ENV RCRAN=${R_REPO}
