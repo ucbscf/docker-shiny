@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  shiny:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    #restart: always
+    #logging:
+    #  driver: syslog
+    #  options:
+    #    syslog-facility: "local7"

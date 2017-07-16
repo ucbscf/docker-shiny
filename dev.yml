@@ -1,0 +1,70 @@
+version: '2'
+
+services:
+  shiny1-dev:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8848:3838"
+    container_name: shiny1-dev
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
+
+  shiny2-dev:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8849:3838"
+    container_name: shiny2-dev
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
+
+  shiny3-dev:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8850:3838"
+    container_name: shiny3-dev
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
+
+  shiny4-dev:
+    build: 
+      context: .
+      args:
+        - SITE_SHINY_USER_ID
+    ports:
+      - "8851:3838"
+    container_name: shiny4-dev
+    volumes:
+      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /usr/local/common/etc/skel:/home/skel
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
