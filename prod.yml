@@ -1,14 +1,14 @@
 version: '2'
 
 services:
-  shinyserver_1:
+  shiny1-prod:
     build: 
       context: .
       args:
         - SITE_SHINY_USER_ID
     ports:
       - "8838:3838"
-    container_name: scf_shinyserver1
+    container_name: shiny2-prod
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
@@ -18,14 +18,14 @@ services:
       options:
         syslog-facility: "local7"
 
-  shinyserver_2:
+  shiny2-prod:
     build: 
       context: .
       args:
         - SITE_SHINY_USER_ID
     ports:
       - "8839:3838"
-    container_name: scf_shinyserver2
+    container_name: shiny3-prod
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
@@ -35,14 +35,14 @@ services:
       options:
         syslog-facility: "local7"
 
-  shinyserver_3:
+  shiny3-prod:
     build: 
       context: .
       args:
         - SITE_SHINY_USER_ID
     ports:
       - "8840:3838"
-    container_name: scf_shinyserver3
+    container_name: shiny4-prod
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
@@ -52,14 +52,14 @@ services:
       options:
         syslog-facility: "local7"
 
-  shinyserver_4:
+  shiny4-prod:
     build: 
       context: .
       args:
         - SITE_SHINY_USER_ID
     ports:
       - "8841:3838"
-    container_name: scf_shinyserver4
+    container_name: shiny1-prod
     volumes:
       - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
       - /usr/local/common/etc/skel:/home/skel
