@@ -2,39 +2,23 @@ FROM ubuntu:16.04
 
 ARG SITE_SHINY_USER_ID
 ENV SHINY_USER_ID=$SITE_SHINY_USER_ID
-
-# Necessary for add-apt-repository
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-software-properties
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
-
-############ This came from Jupyter hub install-stat28
-RUN set -e
-RUN apt-get -y --quiet --no-install-recommends install apt-transport-https
-
-ENV R_REPO="https://mran.revolutionanalytics.com/snapshot/2017-02-16"
 ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
-ENV U_CODE="jessie-cran3"
 
-RUN echo "deb ${R_REPO}/bin/linux/ubuntu xenial/" > /etc/apt/sources.list.d/mran.list
+# MRAN snapshot repo
+RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2017-02-16/bin/linux/ubuntu xenial/" > /etc/apt/sources.list.d/mran.list
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
 RUN gpg -a --export ${MRAN_KEY} | apt-key add -
-RUN echo -n | openssl s_client -connect mran.revolutionanalytics.com:443 | \
-    sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | \
-    tee '/usr/local/share/ca-certificates/mran.revolutionanalytics.com.crt'
-
-RUN update-ca-certificates
 
 # Oracle Java 8 repo
-RUN add-apt-repository -y ppa:webupd8team/java
+#RUN add-apt-repository -y ppa:webupd8team/java
+
+RUN apt-get update
 
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
     && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
 
-RUN apt-get update
-
-RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
+RUN apt-get -y --quiet --no-install-recommends install \
 	build-essential \
 	gcc \
 	curl \
@@ -65,13 +49,10 @@ RUN apt-get -y --quiet --allow-unauthenticated --no-install-recommends install \
 	libmariadb-client-lgpl-dev \
     ;
 
-#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java7-installer 
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java8-installer 
+#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java8-installer 
 
 RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
 
-ENV RCRAN=${R_REPO}
 ADD Rprofile.site /etc/R/Rprofile.site
 
 # This is Shiny stuff, leave this alone
@@ -85,20 +66,12 @@ RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.1.83
 
 RUN Rscript -e "local_install('devtools')"
 
-# 1.4.9001
-#RUN Rscript -e "devtools::install_github('rstudio/rmarkdown', ref = 'b7434dc', upgrade_dependencies = FALSE)"
 # 1.3
 RUN Rscript -e "devtools::install_github('rstudio/rmarkdown', ref = '3a6d1a5', upgrade_dependencies = FALSE)"
 # 0.1.0
 RUN Rscript -e "devtools::install_github('rstudio/tutor', ref = '3334a20', upgrade_dependencies = FALSE)"
 
-RUN echo "======================================================================="
-RUN Rscript -e "packageVersion('rmarkdown')"
-
 RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = '4538114', upgrade_dependencies = FALSE)"
-
-RUN echo "======================================================================="
-RUN Rscript -e "packageVersion('rmarkdown')"
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
 
@@ -156,7 +129,6 @@ RUN install -d -o shiny -g shiny -m 777 \
 	/var/log/shiny-server \
 	/var/lib/shiny-server \
 	/var/run/shiny-server
-#RUN sed -i '113 a <h2><a href="./examples/">Other examples of Shiny application</a> </h2>' /srv/shiny-server/index.html
 
 RUN apt-get clean && \
 	rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
@@ -164,9 +136,6 @@ RUN apt-get clean && \
 # Directory for shiny apps and static assets.
 VOLUME /srv/shiny-server
 
-# to allow access from outside of the container  to the container service
-# at that ports need to allow access from firewall if need to access it outside
-# of the server. 
 EXPOSE 3838
 
 # Set Shiny log level
