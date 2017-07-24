@@ -115,6 +115,10 @@ RUN Rscript -e "local_install(RMySQL)"
 RUN Rscript -e "local_install(ggdendro)"
 RUN Rscript -e "local_install(rpart)"
 RUN Rscript -e "local_install(rpart.plot)"
+RUN Rscript -e "local_install(rpart.plot)"
+
+RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'v1.0.2', upgrade_dependencies = FALSE)"
+RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'v5.1', upgrade_dependencies = FALSE)"
 
 ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
 

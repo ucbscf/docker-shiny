@@ -1,70 +1,34 @@
 version: '2'
 
 services:
-  shiny1-prod:
-    build: 
-      context: .
-      args:
-        - SITE_SHINY_USER_ID
+  shiny1:
+    extends:
+      file: common.yml
+      service: shiny
     ports:
       - "8838:3838"
-    container_name: shiny2-prod
-    volumes:
-      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
-      - /usr/local/common/etc/skel:/home/skel
-    restart: always
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: "local7"
+    container_name: shiny1
 
-  shiny2-prod:
-    build: 
-      context: .
-      args:
-        - SITE_SHINY_USER_ID
+  shiny2:
+    extends:
+      file: common.yml
+      service: shiny
     ports:
       - "8839:3838"
-    container_name: shiny3-prod
-    volumes:
-      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
-      - /usr/local/common/etc/skel:/home/skel
-    restart: always
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: "local7"
+    container_name: shiny2
 
-  shiny3-prod:
-    build: 
-      context: .
-      args:
-        - SITE_SHINY_USER_ID
+  shiny3:
+    extends:
+      file: common.yml
+      service: shiny
     ports:
       - "8840:3838"
-    container_name: shiny4-prod
-    volumes:
-      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
-      - /usr/local/common/etc/skel:/home/skel
-    restart: always
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: "local7"
+    container_name: shiny3
 
-  shiny4-prod:
-    build: 
-      context: .
-      args:
-        - SITE_SHINY_USER_ID
+  shiny4:
+    extends:
+      file: common.yml
+      service: shiny
     ports:
       - "8841:3838"
-    container_name: shiny1-prod
-    volumes:
-      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
-      - /usr/local/common/etc/skel:/home/skel
-    restart: always
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: "local7"
+    container_name: shiny4
