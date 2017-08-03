@@ -44,7 +44,7 @@ services:
     ports:
     restart: always
       - "8842:3838"
-    container_name: shiny4
+    container_name: shiny5
 
   shiny6:
     extends:
@@ -53,4 +53,4 @@ services:
     ports:
     restart: always
       - "8843:3838"
-    container_name: shiny4
+    container_name: shiny6
