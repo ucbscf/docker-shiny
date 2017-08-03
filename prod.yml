@@ -15,8 +15,8 @@ services:
       file: common.yml
       service: shiny
     ports:
-    restart: always
       - "8839:3838"
+    restart: always
     container_name: shiny2
 
   shiny3:
@@ -24,8 +24,8 @@ services:
       file: common.yml
       service: shiny
     ports:
-    restart: always
       - "8840:3838"
+    restart: always
     container_name: shiny3
 
   shiny4:
@@ -33,8 +33,8 @@ services:
       file: common.yml
       service: shiny
     ports:
-    restart: always
       - "8841:3838"
+    restart: always
     container_name: shiny4
 
   shiny5:
@@ -42,8 +42,8 @@ services:
       file: common.yml
       service: shiny
     ports:
-    restart: always
       - "8842:3838"
+    restart: always
     container_name: shiny5
 
   shiny6:
@@ -51,6 +51,6 @@ services:
       file: common.yml
       service: shiny
     ports:
-    restart: always
       - "8843:3838"
+    restart: always
     container_name: shiny6
