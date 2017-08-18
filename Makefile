@@ -1,4 +1,4 @@
 rebuild:
-	docker-compose build
-	docker-compose stop
-	docker-compose up -d
+	docker-compose -f dev.yml build
+	docker-compose -f dev.yml stop
+	docker-compose -f dev.yml up -d

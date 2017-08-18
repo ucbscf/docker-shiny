@@ -7,7 +7,7 @@ services:
       args:
         - SITE_SHINY_USER_ID
     volumes:
-      - /mirror/data/pub/users/alucas/ShinyApps:/mirror/data/pub/users/alucas/ShinyApps
+      - /mirror/data/pub/users/alucas/s20-2017f:/srv/shiny-apps
       - /usr/local/common/etc/skel:/home/skel
     #restart: always
     #logging:
