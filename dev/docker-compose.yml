@@ -32,3 +32,19 @@ services:
     ports:
       - "8851:3838"
     container_name: shiny4-dev
+
+  shiny5-dev:
+    extends:
+      file: common.yml
+      service: shiny
+    ports:
+      - "8852:3838"
+    container_name: shiny5-dev
+
+  shiny6-dev:
+    extends:
+      file: common.yml
+      service: shiny
+    ports:
+      - "8853:3838"
+    container_name: shiny6-dev

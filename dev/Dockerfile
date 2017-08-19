@@ -126,7 +126,7 @@ RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'c7e8330', upg
 RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = '5800f07', upgrade_dependencies = FALSE)"
 
-ADD ./etc/shiny-server/shiny-server.conf /etc/shiny-server/shiny-server.conf
+ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 ##startup scripts  
 #Pre-config scrip that maybe need to be run one time only when the container
