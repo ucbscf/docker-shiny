@@ -8,7 +8,7 @@ services:
         - SITE_SHINY_USER_ID
     volumes:
       #- /mirror/data/pub/users/alucas/s20-2017f:/srv/shiny-apps
-      /mirror/data/pub/shiny:/srv/shiny-apps
+      - /mirror/data/pub/shiny:/srv/shiny-apps
     #restart: always
     #logging:
     #  driver: syslog
