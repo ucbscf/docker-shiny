@@ -73,15 +73,22 @@ RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_SERVER_DEB} &
     ;
 
 RUN Rscript -e "local_install('devtools')"
+RUN Rscript -e "local_install('magrittr')"
+RUN Rscript -e "install.packages('rlang')"
 
+RUN Rscript -e "devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('rstudio/rmarkdown', ref = '7669d66', upgrade_dependencies = FALSE)"
 # 0.1.0
 RUN Rscript -e "devtools::install_github('rstudio/learnr', ref = '0909f74', upgrade_dependencies = FALSE)"
 
-RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'ab2a3e0', upgrade_dependencies = FALSE)"
+#RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'ab2a3e0', upgrade_dependencies = FALSE)"
+RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'e806220', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
-
+RUN Rscript -e "local_install(googleAuthR)"
+RUN Rscript -e "local_install(shinyjs)"
+RUN Rscript -e "local_install(httr)"
+RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID')"
 RUN Rscript -e "local_install(formatR)"
 RUN Rscript -e "local_install(uuid)"
 RUN Rscript -e "local_install(fields)"
@@ -148,9 +155,8 @@ RUN apt-get clean && \
 # Directory for shiny apps and static assets.
 VOLUME /srv/shiny-server
 
-EXPOSE 3838
-
-# Set Shiny log level
 ENV SHINY_LOG_LEVEL="TRACE"
+
+EXPOSE 3838
 
 CMD /usr/bin/sudo -u shiny /opt/shiny-server/bin/shiny-server
