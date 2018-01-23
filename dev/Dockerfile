@@ -6,20 +6,22 @@ ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
 ENV SHINY_SERVER_DEB="shiny-server-1.5.3.838-amd64.deb"
 
+RUN sed -i \
+	-e 's/archive.ubuntu/old-releases.ubuntu/' \
+	-e 's/security.ubuntu/old-releases.ubuntu/' \
+	/etc/apt/sources.list
+
 RUN apt-get update
 
 # MRAN snapshot repo
 RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2017-08-17/bin/linux/ubuntu zesty/" > /etc/apt/sources.list.d/mran.list
+
+RUN apt-get -y --quiet --no-install-recommends install apt-transport-https
 # To fetch remote key
 RUN apt-get -y --quiet --no-install-recommends install \
 	dirmngr
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
 RUN gpg -a --export ${MRAN_KEY} | apt-key add -
-
-# Oracle Java 8 repo
-#RUN add-apt-repository -y ppa:webupd8team/java
-
-RUN apt-get update
 
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
     && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
