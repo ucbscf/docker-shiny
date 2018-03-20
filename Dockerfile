@@ -8,6 +8,7 @@ RUN apt-get update
 RUN apt-get -y --quiet --no-install-recommends install \
 	apt-transport-https \
 	build-essential \
+	ca-certificates \
 	cron \
 	curl \
 	debconf-utils \
@@ -33,8 +34,8 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	;
 
 # MRAN snapshot repo
-RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
-RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
+RUN echo "deb https://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
+RUN gpg --keyserver ${GPG_KEY_SERVER} --recv-keys ${MRAN_KEY}
 RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
 RUN apt-get update
