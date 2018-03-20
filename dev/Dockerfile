@@ -1,20 +1,20 @@
-FROM ubuntu:17.04
+FROM ubuntu:17.10
 
 ARG SITE_SHINY_USER_ID
 ENV SHINY_USER_ID=$SITE_SHINY_USER_ID
 ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
-ENV SHINY_SERVER_DEB="shiny-server-1.5.3.838-amd64.deb"
+ENV SHINY_SERVER_DEB="shiny-server-1.5.6.875-amd64.deb"
 
-RUN sed -i \
-	-e 's/archive.ubuntu/old-releases.ubuntu/' \
-	-e 's/security.ubuntu/old-releases.ubuntu/' \
-	/etc/apt/sources.list
+# RUN sed -i \
+# 	-e 's/archive.ubuntu/old-releases.ubuntu/' \
+# 	-e 's/security.ubuntu/old-releases.ubuntu/' \
+# 	/etc/apt/sources.list
 
 RUN apt-get update
 
 # MRAN snapshot repo
-RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2017-08-17/bin/linux/ubuntu zesty/" > /etc/apt/sources.list.d/mran.list
+RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
 
 RUN apt-get -y --quiet --no-install-recommends install apt-transport-https
 # To fetch remote key
@@ -23,41 +23,35 @@ RUN apt-get -y --quiet --no-install-recommends install \
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
 RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
-    && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-
 RUN apt-get -y --quiet --no-install-recommends install \
 	build-essential \
 	gcc \
 	curl \
+	debconf-utils \
 	wget \
+	sudo \
+	cron \
 	pkg-config \
 	libcurl4-openssl-dev \
 	libreadline-dev \
-	libssl-dev \
-	libzmq3-dev \
-	r-base-core \
-	r-base-dev \
-	r-base \
-	r-recommended \
-	libopenblas-base \
-	r-cran-testthat \
-	littler \
-	gdebi-core \  
-	debconf-utils \	
-	libapparmor1 \
-	sudo \
-	cron \
 	libssl1.0.0 \
 	libssl-dev \
+	libzmq3-dev \
 	libxml2-dev \
 	libcairo-dev \
 	libcurl4-openssl-dev \
 	lmodern \
 	libmariadb-client-lgpl-dev \
-    ;
-
-#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java8-installer 
+	libopenblas-base \
+	r-recommended \
+	r-base-core \
+	r-base-dev \
+	r-base \
+	r-cran-testthat \
+	littler \
+	gdebi-core \  
+	libapparmor1 \
+	;
 
 RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
 
@@ -81,11 +75,11 @@ RUN Rscript -e "devtools::install_github('rstudio/rmarkdown', ref = '7669d66', u
 # 0.1.0
 RUN Rscript -e "devtools::install_github('rstudio/learnr', ref = '0909f74', upgrade_dependencies = FALSE)"
 
-#RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'ab2a3e0', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'e806220', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
 RUN Rscript -e "local_install(googleAuthR)"
+RUN Rscript -e "local_install(shinydashboard)"
 RUN Rscript -e "local_install(shinyjs)"
 RUN Rscript -e "local_install(httr)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID')"
@@ -134,6 +128,7 @@ RUN Rscript -e "local_install(rpart.plot)"
 RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'c7e8330', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = '5800f07', upgrade_dependencies = FALSE)"
+
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
