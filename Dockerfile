@@ -1,59 +1,54 @@
 FROM ubuntu:17.10
 
-ARG SITE_SHINY_USER_ID
-ENV SHINY_USER_ID=$SITE_SHINY_USER_ID
 ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
 ENV SHINY_SERVER_DEB="shiny-server-1.5.6.875-amd64.deb"
 
-# RUN sed -i \
-# 	-e 's/archive.ubuntu/old-releases.ubuntu/' \
-# 	-e 's/security.ubuntu/old-releases.ubuntu/' \
-# 	/etc/apt/sources.list
-
 RUN apt-get update
-
-# MRAN snapshot repo
-RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
-
-RUN apt-get -y --quiet --no-install-recommends install apt-transport-https
-# To fetch remote key
 RUN apt-get -y --quiet --no-install-recommends install \
-	dirmngr
-RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
-RUN gpg -a --export ${MRAN_KEY} | apt-key add -
-
-RUN apt-get -y --quiet --no-install-recommends install \
+	apt-transport-https \
 	build-essential \
-	gcc \
+	cron \
 	curl \
 	debconf-utils \
-	wget \
-	sudo \
-	cron \
-	pkg-config \
+	dirmngr \
+	gcc \
+	gdebi-core \
+	libapparmor1 \
+	libcairo-dev \
 	libcurl4-openssl-dev \
+	libcurl4-openssl-dev \
+	libgdal-dev \
+	libmariadb-client-lgpl-dev \
+	libopenblas-base \
 	libreadline-dev \
 	libssl1.0.0 \
 	libssl-dev \
-	libzmq3-dev \
 	libxml2-dev \
-	libcairo-dev \
-	libcurl4-openssl-dev \
+	libzmq3-dev \
 	lmodern \
-	libmariadb-client-lgpl-dev \
-	libopenblas-base \
+	pkg-config \
+	sudo \
+	wget \
+	;
+
+# MRAN snapshot repo
+RUN echo "deb http://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ${MRAN_KEY}
+RUN gpg -a --export ${MRAN_KEY} | apt-key add -
+
+RUN apt-get update
+
+RUN apt-get -y --quiet --no-install-recommends install \
 	r-recommended \
 	r-base-core \
 	r-base-dev \
 	r-base \
 	r-cran-testthat \
 	littler \
-	gdebi-core \  
-	libapparmor1 \
 	;
 
-RUN if [ -z $SHINY_USER_ID ]; then useradd -m shiny; else useradd -m -u $SHINY_USER_ID shiny; fi
+RUN useradd -m shiny
 
 ADD Rprofile.site /etc/R/Rprofile.site
 
@@ -61,10 +56,8 @@ ADD Rprofile.site /etc/R/Rprofile.site
 RUN Rscript -e "local_install('shiny')"
 RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_SERVER_DEB} && \
 	dpkg -i --force-depends ${SHINY_SERVER_DEB} && \
-	rm ${SHINY_SERVER_DEB} && \
-	mkdir -p /srv/shiny-server /etc/service/shiny /var/run/shiny-server /srv/shiny-server/examples && \
-	cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples/. \
-    ;
+	rm ${SHINY_SERVER_DEB}
+RUN install -d /srv/shiny-server /etc/service/shiny
 
 RUN Rscript -e "local_install('devtools')"
 RUN Rscript -e "local_install('magrittr')"
@@ -78,11 +71,9 @@ RUN Rscript -e "devtools::install_github('rstudio/learnr', ref = '0909f74', upgr
 RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'e806220', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
-RUN Rscript -e "local_install(googleAuthR)"
 RUN Rscript -e "local_install(shinydashboard)"
 RUN Rscript -e "local_install(shinyjs)"
 RUN Rscript -e "local_install(httr)"
-RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID')"
 RUN Rscript -e "local_install(formatR)"
 RUN Rscript -e "local_install(uuid)"
 RUN Rscript -e "local_install(fields)"
@@ -96,7 +87,7 @@ RUN Rscript -e "local_install(raster)"
 RUN Rscript -e "local_install(RColorBrewer)"
 RUN Rscript -e "local_install(reshape)"
 RUN Rscript -e "local_install(reshape2)"
-RUN Rscript -e "local_install(rgdal)"
+#RUN Rscript -e "local_install(rgdal)"
 RUN Rscript -e "local_install(sp)"
 RUN Rscript -e "local_install(mosaicData)"
 RUN Rscript -e "local_install(statisticalModeling)"
@@ -124,19 +115,21 @@ RUN Rscript -e "local_install(ggdendro)"
 RUN Rscript -e "local_install(rpart)"
 RUN Rscript -e "local_install(rpart.plot)"
 RUN Rscript -e "local_install(rpart.plot)"
+RUN Rscript -e "local_install(googleAuthR)"
 
+RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'c7e8330', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = '5800f07', upgrade_dependencies = FALSE)"
-
+RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
-##startup scripts  
+##startup scripts
 #Pre-config scrip that maybe need to be run one time only when the container
-# run the first time .. using a flag to don't 
+# run the first time .. using a flag to don't
 # run it again ... use for conf for service ... when run the first time ...
-RUN mkdir -p /etc/my_init.d /var/log/cron/config
+#RUN mkdir -p /etc/my_init.d /var/log/cron/config
 
 # Let's open up the logs within the container.
 RUN install -d -o shiny -g shiny -m 777 \
