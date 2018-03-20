@@ -1,50 +1,14 @@
 version: '2'
 
 services:
-  shiny1-dev:
-    extends:
-      file: common.yml
-      service: shiny
+  shiny:
+    image: ucbscf/docker-shiny:3944332
     ports:
-      - "8848:3838"
-    container_name: shiny1-dev
-
-  shiny2-dev:
-    extends:
-      file: common.yml
-      service: shiny
-    ports:
-      - "8849:3838"
-    container_name: shiny2-dev
-
-  shiny3-dev:
-    extends:
-      file: common.yml
-      service: shiny
-    ports:
-      - "8850:3838"
-    container_name: shiny3-dev
-
-  shiny4-dev:
-    extends:
-      file: common.yml
-      service: shiny
-    ports:
-      - "8851:3838"
-    container_name: shiny4-dev
-
-  shiny5-dev:
-    extends:
-      file: common.yml
-      service: shiny
-    ports:
-      - "8852:3838"
-    container_name: shiny5-dev
-
-  shiny6-dev:
-    extends:
-      file: common.yml
-      service: shiny
-    ports:
-      - "8853:3838"
-    container_name: shiny6-dev
+      - "8848-8853:3838"
+    volumes:
+      - /mirror/data/pub/shiny:/srv/shiny-apps
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: "local7"
+#        tag: "{{.ImageName}}"
