@@ -124,6 +124,8 @@ RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgra
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = '5800f07', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
+RUN Rscript -e "local_install(rgeos)"
+
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 ##startup scripts
