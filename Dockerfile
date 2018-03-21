@@ -59,7 +59,6 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-magrittr \
 	r-cran-maps \
 	r-cran-maptools \
-	r-cran-memoise \
 	r-cran-rmysql \
 	r-cran-ncdf4 \
 	r-cran-pkgmaker \
@@ -153,8 +152,10 @@ RUN Rscript -e "local_install(rpart.plot)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
 #RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'c7e8330', upgrade_dependencies = FALSE)"
-#RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
-RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = '5800f07', upgrade_dependencies = FALSE)"
+
+# googleAuthR requires memoise >= 1.1.0 so we can't use artful's r-cran-memoise
+RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
+RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "local_install(rgeos)"
