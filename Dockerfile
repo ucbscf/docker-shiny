@@ -75,6 +75,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-maps \
 	r-cran-maptools \
 	r-cran-markdown \
+	r-cran-miniui \
 	r-cran-rmysql \
 	r-cran-rcpp \
 	r-cran-ncdf4 \
@@ -91,6 +92,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-rngtools \
 	r-cran-rpart \
 	r-cran-rsqlite \
+	r-cran-sourcetools \
 	r-cran-sp \
 	r-cran-testthat \
 	r-cran-tidyr \
