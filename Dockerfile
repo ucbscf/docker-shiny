@@ -134,7 +134,7 @@ RUN Rscript -e "local_install(ggdendro)"
 RUN Rscript -e "local_install(rpart.plot)"
 RUN Rscript -e "local_install(rgeos)"
 
-RUN Rscript -e "devtools::install_github('cran/assertthat', ref = '6dce79d',
+RUN Rscript -e "devtools::install_github('cran/assertthat', ref = '6dce79d', \
 	upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
