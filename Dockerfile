@@ -133,12 +133,12 @@ RUN Rscript -e "local_install(Lahman)"
 RUN Rscript -e "local_install(ggdendro)"
 RUN Rscript -e "local_install(rpart.plot)"
 RUN Rscript -e "local_install(rgeos)"
+RUN Rscript -e "local_install(assertthat)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
 
 # googleAuthR requires memoise >= 1.1.0 so we can't use artful's r-cran-memoise
 RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
-RUN Rscript -e "local_install(assertthat)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
