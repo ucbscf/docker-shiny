@@ -54,6 +54,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-base64enc \
 	r-cran-brew \
 	r-cran-catools \
+	r-cran-curl \
 	r-cran-doparallel \
 	r-cran-dplyr \
 	r-cran-fields \
@@ -65,6 +66,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-highr \
 	r-cran-htmlwidgets \
 	r-cran-httpuv \
+	r-cran-httr \
 	r-cran-igraph \
 	r-cran-irlba \
 	r-cran-iterators \
@@ -75,15 +77,14 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-maps \
 	r-cran-maptools \
 	r-cran-markdown \
-	r-cran-miniui \
-	r-cran-rmysql \
-	r-cran-rcpp \
 	r-cran-ncdf4 \
+	r-cran-openssl \
 	r-cran-pkgmaker \
 	r-cran-plogr \
 	r-cran-png \
 	r-cran-raster \
 	r-cran-rcolorbrewer \
+	r-cran-rcpp \
 	r-cran-rcurl \
 	r-cran-registry \
 	r-cran-reshape \
@@ -97,17 +98,22 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-testthat \
 	r-cran-tidyr \
 	r-cran-uuid \
+	r-cran-withr \
 	r-cran-xml \
 	r-cran-xml2 \
 	r-cran-yaml \
 	;
+
+# packages in bionic:
+# assertthat, devtools, git2r, hms, memoise, readr, rlang, rprojroot,
+# rstudioapi, whisker
 
 RUN useradd -m shiny
 
 ADD Rprofile.site /etc/R/Rprofile.site
 
 # The debian/ubuntu r-cran-shiny package symlinks various javascript assets
-# in /usr/lib/R/site-library/shiny/. shiny however refuses to serve[1] these
+# in /usr/lib/R/site-library/shiny/. However, shiny refuses to serve[1] these
 # assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
 # which overcomes this but they depend on Debian r-base-core which depends on
 # an r-api- metapackage.
