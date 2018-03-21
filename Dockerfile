@@ -99,6 +99,10 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-yaml \
 	;
 
+RUN useradd -m shiny
+
+ADD Rprofile.site /etc/R/Rprofile.site
+
 # The debian/ubuntu r-cran-shiny package symlinks various javascript assets
 # in /usr/lib/R/site-library/shiny/. shiny however refuses to serve[1] these
 # assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
@@ -113,14 +117,8 @@ RUN apt-get -y --quiet --no-install-recommends install \
 RUN Rscript -e "local_install(shiny)"
 RUN Rscript -e "local_install(shinyjs)"
 
-RUN useradd -m shiny
-
-ADD Rprofile.site /etc/R/Rprofile.site
-
-# This is Shiny stuff, leave this alone
-#RUN Rscript -e "local_install('shiny')"
-RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_SERVER_DEB} && \
-	dpkg -i --force-depends ${SHINY_SERVER_DEB} && \
+RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_SERVER_DEB}
+RUN dpkg -i --force-depends ${SHINY_SERVER_DEB} && \
 	rm ${SHINY_SERVER_DEB}
 RUN install -d /srv/shiny-server /etc/service/shiny
 
