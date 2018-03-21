@@ -40,7 +40,6 @@ RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
 RUN apt-get update
 
-# r-base-core needs to be installed before manually installing r-cran-shiny
 RUN apt-get -y --quiet --no-install-recommends install \
 	r-recommended \
 	r-base-core \
@@ -48,15 +47,6 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-base \
 	littler \
 	;
-
-# The debian/ubuntu r-cran-shiny package symlinks various javascript assets
-# in /usr/lib/R/site-library/shiny/. shiny however refuses to serve[1] these
-# assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
-# which overcomes this so we'll go ahead and install from stretch-backports.
-# [1] https://github.com/rstudio/shiny/issues/1064
-# [2] https://sources.debian.org/src/r-cran-shiny/1.0.5+dfsg-4/debian/patches/fix_utils_resolve_for_debian.patch/
-RUN curl -o /tmp/r-cran-shiny.deb http://ftp.us.debian.org/debian/pool/main/r/r-cran-shiny/r-cran-shiny_1.0.5+dfsg-4~bpo9+1_all.deb
-RUN gdebi --non-interactive /tmp/r-cran-shiny.deb
 
 # Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
@@ -100,7 +90,6 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-rngtools \
 	r-cran-rpart \
 	r-cran-rsqlite \
-	r-cran-shinyjs \
 	r-cran-sp \
 	r-cran-testthat \
 	r-cran-tidyr \
@@ -109,6 +98,20 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-xml2 \
 	r-cran-yaml \
 	;
+
+# The debian/ubuntu r-cran-shiny package symlinks various javascript assets
+# in /usr/lib/R/site-library/shiny/. shiny however refuses to serve[1] these
+# assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
+# which overcomes this but they depend on Debian r-base-core which depends on
+# an r-api- metapackage.
+# [1] https://github.com/rstudio/shiny/issues/1064
+# [2] https://sources.debian.org/src/r-cran-shiny/1.0.5+dfsg-4/debian/patches/fix_utils_resolve_for_debian.patch/
+# We'll just install shiny from source. Other r-cran- packages that depend on
+# the r-cran-shiny package will also have to be installed from source.
+#RUN curl -o /tmp/r-cran-shiny.deb http://ftp.us.debian.org/debian/pool/main/r/r-cran-shiny/r-cran-shiny_1.0.5+dfsg-4~bpo9+1_all.deb
+#RUN gdebi --non-interactive /tmp/r-cran-shiny.deb
+RUN Rscript -e "local_install(shiny)"
+RUN Rscript -e "local_install(shinyjs)"
 
 RUN useradd -m shiny
 
