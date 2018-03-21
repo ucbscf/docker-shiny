@@ -1,4 +1,4 @@
-DOCKER_IMAGE = "ucbscf/docker-shiny"
+DOCKER_IMAGE = ucbscf/docker-shiny
 SHA = $(shell git rev-parse --short HEAD)
 
 build:
