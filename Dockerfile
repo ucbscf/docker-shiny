@@ -39,6 +39,7 @@ RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
 RUN apt-get update
 
+# Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
 	r-recommended \
 	r-base-core \
@@ -121,59 +122,26 @@ RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'e806220', upg
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
 RUN Rscript -e "local_install(shinydashboard)"
-#RUN Rscript -e "local_install(shinyjs)"
-#RUN Rscript -e "local_install(httr)"
-#RUN Rscript -e "local_install(formatR)"
-#RUN Rscript -e "local_install(uuid)"
-#RUN Rscript -e "local_install(fields)"
-#RUN Rscript -e "local_install(ggplot2)"
 RUN Rscript -e "local_install(grid)"
-#RUN Rscript -e "local_install(gridExtra)"
-#RUN Rscript -e "local_install(maps)"
-#RUN Rscript -e "local_install(maptools)"
-#RUN Rscript -e "local_install(ncdf4)"
-#RUN Rscript -e "local_install(raster)"
-#RUN Rscript -e "local_install(RColorBrewer)"
-#RUN Rscript -e "local_install(reshape)"
-#RUN Rscript -e "local_install(reshape2)"
-#RUN Rscript -e "local_install(rgdal)"
-#RUN Rscript -e "local_install(sp)"
 RUN Rscript -e "local_install(mosaicData)"
 RUN Rscript -e "local_install(statisticalModeling)"
 RUN Rscript -e "local_install(methods)"
-#RUN Rscript -e "local_install(lubridate)"
-#RUN Rscript -e "local_install(igraph)"
-#RUN Rscript -e "local_install(doParallel)"
-#RUN Rscript -e "local_install(foreach)"
-#RUN Rscript -e "local_install(iterators)"
-#RUN Rscript -e "local_install(gridBase)"
-#RUN Rscript -e "local_install(pkgmaker)"
-#RUN Rscript -e "local_install(registry)"
-#RUN Rscript -e "local_install(rngtools)"
-#RUN Rscript -e "local_install(irlba)"
 RUN Rscript -e "local_install(manipulate)"
 RUN Rscript -e "local_install(leaflet)"
-#RUN Rscript -e "local_install(XML)"
-#RUN Rscript -e "local_install(RCurl)"
-#RUN Rscript -e "local_install(plogr)"
-#RUN Rscript -e "local_install(RSQLite)"
 RUN Rscript -e "local_install(nycflights13)"
 RUN Rscript -e "local_install(Lahman)"
-#RUN Rscript -e "local_install(RMySQL)"
 RUN Rscript -e "local_install(ggdendro)"
-#RUN Rscript -e "local_install(rpart)"
 RUN Rscript -e "local_install(rpart.plot)"
-#RUN Rscript -e "local_install(googleAuthR)"
+RUN Rscript -e "local_install(rgeos)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
-#RUN Rscript -e "devtools::install_github('hadley/testthat', ref = 'c7e8330', upgrade_dependencies = FALSE)"
 
 # googleAuthR requires memoise >= 1.1.0 so we can't use artful's r-cran-memoise
 RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
+RUN Rscript -e "local_install(assertthat)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
-RUN Rscript -e "local_install(rgeos)"
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
