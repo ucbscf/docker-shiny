@@ -44,25 +44,37 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-base-core \
 	r-base-dev \
 	r-base \
+	r-cran-backports \
+	r-cran-base64enc \
+	r-cran-brew \
+	r-cran-catools \
 	r-cran-doparallel \
+	r-cran-dplyr \
 	r-cran-fields \
 	r-cran-foreach \
 	r-cran-formatr \
 	r-cran-ggplot2 \
 	r-cran-gridbase \
 	r-cran-gridextra \
+	r-cran-highr \
+	r-cran-htmlwidgets \
 	r-cran-httr \
 	r-cran-igraph \
 	r-cran-irlba \
 	r-cran-iterators \
+	r-cran-knitr \
+	r-cran-latticeextra \
 	r-cran-lubridate \
 	r-cran-magrittr \
 	r-cran-maps \
 	r-cran-maptools \
+	r-cran-markdown \
 	r-cran-rmysql \
+	r-cran-rcpp \
 	r-cran-ncdf4 \
 	r-cran-pkgmaker \
 	r-cran-plogr \
+	r-cran-png \
 	r-cran-raster \
 	r-cran-rcolorbrewer \
 	r-cran-rcurl \
@@ -77,8 +89,11 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-shinyjs \
 	r-cran-sp \
 	r-cran-testthat \
+	r-cran-tidyr \
 	r-cran-uuid \
 	r-cran-xml \
+	r-cran-xml2 \
+	r-cran-yaml \
 	littler \
 	;
 
