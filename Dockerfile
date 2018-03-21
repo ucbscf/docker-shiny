@@ -47,7 +47,7 @@ RUN apt-get update
 # [1] https://github.com/rstudio/shiny/issues/1064
 # [2] https://sources.debian.org/src/r-cran-shiny/1.0.5+dfsg-4/debian/patches/fix_utils_resolve_for_debian.patch/
 RUN curl -o /tmp/r-cran-shiny.deb http://ftp.us.debian.org/debian/pool/main/r/r-cran-shiny/r-cran-shiny_1.0.5+dfsg-4~bpo9+1_all.deb
-RUN gdebi -non-interactive /tmp/r-cran-shiny.deb
+RUN gdebi --non-interactive /tmp/r-cran-shiny.deb
 
 # Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
