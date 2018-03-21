@@ -117,12 +117,14 @@ ADD Rprofile.site /etc/R/Rprofile.site
 # assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
 # which overcomes this but they depend on Debian r-base-core which depends on
 # an r-api- metapackage.
+#
 # [1] https://github.com/rstudio/shiny/issues/1064
 # [2] https://sources.debian.org/src/r-cran-shiny/1.0.5+dfsg-4/debian/patches/fix_utils_resolve_for_debian.patch/
-# We'll just install shiny from source. Other r-cran- packages that depend on
-# the r-cran-shiny package will also have to be installed from source.
-#RUN curl -o /tmp/r-cran-shiny.deb http://ftp.us.debian.org/debian/pool/main/r/r-cran-shiny/r-cran-shiny_1.0.5+dfsg-4~bpo9+1_all.deb
-#RUN gdebi --non-interactive /tmp/r-cran-shiny.deb
+#
+# We'll just install shiny from source. r-cran- packages that depend on the
+# r-cran-shiny package will also have to be installed from source, including
+# r-cran-miniui r-cran-shinyjs r-cran-shinydashboard
+
 RUN Rscript -e "local_install(shiny)"
 RUN Rscript -e "local_install(shinyjs)"
 
