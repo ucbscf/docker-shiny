@@ -40,6 +40,15 @@ RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
 RUN apt-get update
 
+# r-base-core needs to be installed before manually installing r-cran-shiny
+RUN apt-get -y --quiet --no-install-recommends install \
+	r-recommended \
+	r-base-core \
+	r-base-dev \
+	r-base \
+	littler \
+	;
+
 # The debian/ubuntu r-cran-shiny package symlinks various javascript assets
 # in /usr/lib/R/site-library/shiny/. shiny however refuses to serve[1] these
 # assets which results in 404 errors. Packages of 1.0.5 and up have a patch[2]
@@ -51,10 +60,6 @@ RUN gdebi --non-interactive /tmp/r-cran-shiny.deb
 
 # Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
-	r-recommended \
-	r-base-core \
-	r-base-dev \
-	r-base \
 	r-cran-backports \
 	r-cran-base64enc \
 	r-cran-brew \
@@ -103,7 +108,6 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-xml \
 	r-cran-xml2 \
 	r-cran-yaml \
-	littler \
 	;
 
 RUN useradd -m shiny
