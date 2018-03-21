@@ -27,6 +27,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	libxml2-dev \
 	libzmq3-dev \
 	lmodern \
+	lsb-release \
 	pkg-config \
 	sudo \
 	wget \
