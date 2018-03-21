@@ -64,6 +64,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-gridextra \
 	r-cran-highr \
 	r-cran-htmlwidgets \
+	r-cran-httpuv \
 	r-cran-igraph \
 	r-cran-irlba \
 	r-cran-iterators \
