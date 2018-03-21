@@ -50,6 +50,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-formatr \
 	r-cran-ggplot2 \
 	r-cran-gridbase \
+	r-cran-gridextra \
 	r-cran-httr \
 	r-cran-igraph \
 	r-cran-irlba \
@@ -69,7 +70,6 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-registry \
 	r-cran-reshape \
 	r-cran-reshape2 \
-	r-cran-rgridextra \
 	r-cran-rmysql \
 	r-cran-rngtools \
 	r-cran-rpart \
