@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
-ENV SHINY_SERVER_DEB="shiny-server-1.5.6.875-amd64.deb"
+ENV SHINY_SERVER_DEB="shiny-server-1.5.7.907-amd64.deb"
 
 RUN ln -fs /usr/share/zoneinfo/US/Pacific /etc/localtime
 
