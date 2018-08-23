@@ -2,7 +2,8 @@ version: '2'
 
 services:
   shiny:
-    image: ucbscf/docker-shiny:d5fac13
+    #image: ucbscf/docker-shiny:d5fac13
+    image: ucbscf/docker-shiny:7bf5a9c
     ports:
       - "8848-8853:3838"
     volumes:
@@ -13,14 +14,14 @@ services:
         syslog-facility: "local7"
         tag: "{{.ImageName}}"
 
-  shiny-dev:
-    image: ucbscf/docker-shiny:189db38
-    ports:
-      - "8838:3838"
-    volumes:
-      - /mirror/data/pub/shiny:/srv/shiny-apps
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: "local7"
-        tag: "{{.ImageName}}"
+  #shiny-dev:
+  #  image: ucbscf/docker-shiny:7bf5a9c
+  #  ports:
+  #    - "8838:3838"
+  #  volumes:
+  #    - /mirror/data/pub/shiny:/srv/shiny-apps
+  #  logging:
+  #    driver: syslog
+  #    options:
+  #      syslog-facility: "local7"
+  #      tag: "{{.ImageName}}"
