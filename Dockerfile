@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 
 ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
@@ -34,7 +34,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	;
 
 # MRAN snapshot repo
-RUN echo "deb https://mran.revolutionanalytics.com/snapshot/2018-03-18/bin/linux/ubuntu artful/" > /etc/apt/sources.list.d/mran.list
+RUN echo "deb https://mran.revolutionanalytics.com/snapshot/2018-08-23/bin/linux/ubuntu bionic/" > /etc/apt/sources.list.d/mran.list
 RUN gpg --keyserver ${GPG_KEY_SERVER} --recv-keys ${MRAN_KEY}
 RUN gpg -a --export ${MRAN_KEY} | apt-key add -
 
@@ -50,20 +50,24 @@ RUN apt-get -y --quiet --no-install-recommends install \
 
 # Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
+	r-cran-assertthat
 	r-cran-backports \
 	r-cran-base64enc \
 	r-cran-brew \
 	r-cran-catools \
 	r-cran-curl \
+	r-cran-devtools
 	r-cran-doparallel \
 	r-cran-dplyr \
 	r-cran-fields \
 	r-cran-foreach \
 	r-cran-formatr \
 	r-cran-ggplot2 \
+	r-cran-git2r
 	r-cran-gridbase \
 	r-cran-gridextra \
 	r-cran-highr \
+	r-cran-hms
 	r-cran-htmlwidgets \
 	r-cran-httpuv \
 	r-cran-httr \
@@ -77,6 +81,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-maps \
 	r-cran-maptools \
 	r-cran-markdown \
+	r-cran-memoise
 	r-cran-ncdf4 \
 	r-cran-openssl \
 	r-cran-pkgmaker \
@@ -86,27 +91,28 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-rcolorbrewer \
 	r-cran-rcpp \
 	r-cran-rcurl \
+	r-cran-readr
 	r-cran-registry \
 	r-cran-reshape \
 	r-cran-reshape2 \
+	r-cran-rlang
 	r-cran-rmysql \
 	r-cran-rngtools \
 	r-cran-rpart \
+	r-cran-rprojroot
 	r-cran-rsqlite \
+	r-cran-rstudioapi
 	r-cran-sourcetools \
 	r-cran-sp \
 	r-cran-testthat \
 	r-cran-tidyr \
 	r-cran-uuid \
+	r-cran-whisker
 	r-cran-withr \
 	r-cran-xml \
 	r-cran-xml2 \
 	r-cran-yaml \
 	;
-
-# packages in bionic:
-# assertthat, devtools, git2r, hms, memoise, readr, rlang, rprojroot,
-# rstudioapi, whisker
 
 RUN useradd -m shiny
 
@@ -128,21 +134,21 @@ ADD Rprofile.site /etc/R/Rprofile.site
 RUN Rscript -e "local_install(shiny)"
 RUN Rscript -e "local_install(shinyjs)"
 
-RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_SERVER_DEB}
+RUN wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.7.907-amd64.deb
 RUN dpkg -i --force-depends ${SHINY_SERVER_DEB} && \
 	rm ${SHINY_SERVER_DEB}
 RUN install -d /srv/shiny-server /etc/service/shiny
 
-RUN Rscript -e "local_install('devtools')"
-#RUN Rscript -e "local_install('magrittr')"
-RUN Rscript -e "install.packages('rlang')"
-
+# 20180111
 RUN Rscript -e "devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)"
-RUN Rscript -e "devtools::install_github('rstudio/rmarkdown', ref = '7669d66', upgrade_dependencies = FALSE)"
-# 0.1.0
-RUN Rscript -e "devtools::install_github('rstudio/learnr', ref = '0909f74', upgrade_dependencies = FALSE)"
+# 1.10
+RUN Rscript -e "devtools::install_github('cran/rmarkdown', ref = 'a2e7feb', upgrade_dependencies = FALSE)"
 
-RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'e806220', upgrade_dependencies = FALSE)"
+# 0.9.2.1
+RUN Rscript -e "devtools::install_github('cran/learnr', ref = '71692ec', upgrade_dependencies = FALSE)"
+
+# 20180227
+RUN Rscript -e "devtools::install_github('dtkaplan/checkr', ref = 'f661ed1', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba', upgrade_dependencies = FALSE)"
 RUN Rscript -e "local_install(shinydashboard)"
@@ -160,16 +166,16 @@ RUN Rscript -e "local_install(rgeos)"
 RUN Rscript -e "local_install(commonmark)"
 RUN Rscript -e "local_install(roxygen2)"
 
+# 1.3-3
+RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '1d405c8', upgrade_dependencies = FALSE)"
+
 # Required by googleAuthR
-RUN Rscript -e "devtools::install_github('cran/assertthat', ref = '6dce79d', upgrade_dependencies = FALSE)"
-RUN Rscript -e "devtools::install_github('cran/httr',       ref = 'b37cfa3', upgrade_dependencies = FALSE)"
+# 1.3.1
+RUN Rscript -e "devtools::install_github('cran/httr', ref = 'b37cfa3', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
 
-# googleAuthR requires memoise >= 1.1.0 so we can't use artful's r-cran-memoise
-RUN Rscript -e "devtools::install_github('r-lib/memoise', ref = 'v.1.1.0', upgrade_dependencies = FALSE)"
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
-RUN Rscript -e "devtools::install_github('cran/rgdal', ref = '16ed596', upgrade_dependencies = FALSE)"
 
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
