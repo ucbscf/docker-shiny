@@ -138,12 +138,16 @@ RUN Rscript -e "local_install(shiny)"
 RUN Rscript -e "local_install(shinyjs)"
 
 RUN wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.7.907-amd64.deb
-RUN dpkg -i --force-depends ${SHINY_SERVER_DEB} && \
-	rm ${SHINY_SERVER_DEB}
+RUN dpkg -i --force-depends shiny-server-1.5.7.907-amd64.deb && \
+	rm shiny-server-1.5.7.907-amd64.deb
 RUN install -d /srv/shiny-server /etc/service/shiny
 
 # 20180111
 RUN Rscript -e "devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)"
+# 0.5
+RUN Rscript -e "devtools::install_github('cran/tinytex', ref = 'a350d5c', upgrade_dependencies = FALSE)"
+# 1.20; r-cran-knitr is available but too old
+RUN Rscript -e "devtools::install_github('cran/knitr', ref = 'a18af02', upgrade_dependencies = FALSE)"
 # 1.10
 RUN Rscript -e "devtools::install_github('cran/rmarkdown', ref = 'a2e7feb', upgrade_dependencies = FALSE)"
 
