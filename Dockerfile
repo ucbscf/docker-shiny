@@ -4,6 +4,8 @@ ENV MRAN_KEY="51716619E084DAB9"
 ENV GPG_KEY_SERVER="keyserver.ubuntu.com"
 ENV SHINY_SERVER_DEB="shiny-server-1.5.6.875-amd64.deb"
 
+RUN ln -fs /usr/share/zoneinfo/US/Pacific /etc/localtime
+
 RUN apt-get update
 RUN apt-get -y --quiet --no-install-recommends install \
 	apt-transport-https \
@@ -15,6 +17,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	dirmngr \
 	gcc \
 	gdebi-core \
+	gpg \
 	libapparmor1 \
 	libcairo-dev \
 	libcurl4-openssl-dev \
@@ -30,15 +33,15 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	lsb-release \
 	pkg-config \
 	sudo \
+	tzdata \
 	wget \
 	;
 
 # MRAN snapshot repo
-RUN echo "deb https://mran.revolutionanalytics.com/snapshot/2018-08-23/bin/linux/ubuntu bionic/" > /etc/apt/sources.list.d/mran.list
-RUN gpg --keyserver ${GPG_KEY_SERVER} --recv-keys ${MRAN_KEY}
-RUN gpg -a --export ${MRAN_KEY} | apt-key add -
-
-RUN apt-get update
+#RUN echo "deb https://mran.revolutionanalytics.com/snapshot/2018-08-22/bin/linux/ubuntu bionic/" > /etc/apt/sources.list.d/mran.list
+#RUN gpg --keyserver ${GPG_KEY_SERVER} --recv-keys ${MRAN_KEY}
+#RUN gpg -a --export ${MRAN_KEY} | apt-key add -
+#RUN apt-get update
 
 RUN apt-get -y --quiet --no-install-recommends install \
 	r-recommended \
@@ -48,26 +51,26 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	littler \
 	;
 
-# Check https://packages.ubuntu.com/artful/r-cran-{package} before adding.
+# Check https://packages.ubuntu.com/bionic/r-cran-{package} before adding.
 RUN apt-get -y --quiet --no-install-recommends install \
-	r-cran-assertthat
+	r-cran-assertthat \
 	r-cran-backports \
 	r-cran-base64enc \
 	r-cran-brew \
 	r-cran-catools \
 	r-cran-curl \
-	r-cran-devtools
+	r-cran-devtools \
 	r-cran-doparallel \
 	r-cran-dplyr \
 	r-cran-fields \
 	r-cran-foreach \
 	r-cran-formatr \
 	r-cran-ggplot2 \
-	r-cran-git2r
+	r-cran-git2r \
 	r-cran-gridbase \
 	r-cran-gridextra \
 	r-cran-highr \
-	r-cran-hms
+	r-cran-hms \
 	r-cran-htmlwidgets \
 	r-cran-httpuv \
 	r-cran-httr \
@@ -81,7 +84,7 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-maps \
 	r-cran-maptools \
 	r-cran-markdown \
-	r-cran-memoise
+	r-cran-memoise \
 	r-cran-ncdf4 \
 	r-cran-openssl \
 	r-cran-pkgmaker \
@@ -91,23 +94,23 @@ RUN apt-get -y --quiet --no-install-recommends install \
 	r-cran-rcolorbrewer \
 	r-cran-rcpp \
 	r-cran-rcurl \
-	r-cran-readr
+	r-cran-readr \
 	r-cran-registry \
 	r-cran-reshape \
 	r-cran-reshape2 \
-	r-cran-rlang
+	r-cran-rlang \
 	r-cran-rmysql \
 	r-cran-rngtools \
 	r-cran-rpart \
-	r-cran-rprojroot
+	r-cran-rprojroot \
 	r-cran-rsqlite \
-	r-cran-rstudioapi
+	r-cran-rstudioapi \
 	r-cran-sourcetools \
 	r-cran-sp \
 	r-cran-testthat \
 	r-cran-tidyr \
 	r-cran-uuid \
-	r-cran-whisker
+	r-cran-whisker \
 	r-cran-withr \
 	r-cran-xml \
 	r-cran-xml2 \
@@ -176,7 +179,6 @@ RUN Rscript -e "devtools::install_github('cran/httr', ref = 'b37cfa3', upgrade_d
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleID', ref='d52905e', upgrade_dependencies = FALSE)"
 
 RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
-
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
