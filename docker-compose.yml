@@ -1,8 +1,8 @@
-version: '2'
+version: '3'
 
 services:
   shiny:
-    #image: ucbscf/docker-shiny:d5fac13
+    container_name: shiny
     image: ucbscf/docker-shiny:7bf5a9c
     ports:
       - "8848-8853:3838"
@@ -12,7 +12,7 @@ services:
       driver: syslog
       options:
         syslog-facility: "local7"
-        tag: "{{.ImageName}}"
+        tag: "{{.Name}}"
 
   #shiny-dev:
   #  image: ucbscf/docker-shiny:7bf5a9c
