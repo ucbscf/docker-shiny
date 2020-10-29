@@ -2,7 +2,6 @@ version: '3'
 
 services:
   shiny:
-    container_name: shiny
     image: ucbscf/docker-shiny:7bf5a9c
     ports:
       - "8848-8853:3838"
