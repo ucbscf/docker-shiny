@@ -1,5 +1,5 @@
-# SHA pin of rocker/geospatial:4.0.2, since rocker tags aren't immutable
-FROM rocker/geospatial@sha256:7b0e833cd52753be619030f61ba9e085b45eb9bb13678311da4a55632c3c8c79
+# SHA pin of rocker/geospatial:4.1.0, since rocker tags aren't immutable
+FROM rocker/geospatial@sha256:fb6f81285bf07dfe91beb5bbd7f6b73eb901d55bf828b4a3900f44a3ce652795
 
 # And set ENV for R! It doesn't read from the environment...
 RUN echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron
@@ -69,8 +69,9 @@ RUN install2.r --error \
 	git2r \
 	gridBase \
 	gridExtra \
-    gstat \
+	gstat \
 	highr \
+	Hmisc \
 	hms \
 	htmlwidgets \
 	httpuv \
@@ -111,6 +112,7 @@ RUN install2.r --error \
 	reshape \
 	reshape2 \
 	rgdal \
+	rgl \
 	rgeos \
 	rlang \
 	rmarkdown \
@@ -133,6 +135,7 @@ RUN install2.r --error \
 	tinytex \
 	tweenr \
 	uuid \
+	wesanderson \
 	whisker \
 	withr \
 	XML \
@@ -141,6 +144,11 @@ RUN install2.r --error \
 	;
 
 RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba')"
+
+# koenvdberge; 2021-06-14
+# also used rgl, wesanderson, Hmisc
+RUN Rscript -e 'BiocManager::install("slingshot")'
+RUN Rscript -e 'remotes::install_github("daqana/dqshiny")'
 
 ## # 20180111
 ## RUN Rscript -e "devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)"
