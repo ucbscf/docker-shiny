@@ -1,5 +1,7 @@
 # SHA pin of rocker/geospatial:4.1.0, since rocker tags aren't immutable
-FROM rocker/geospatial@sha256:fb6f81285bf07dfe91beb5bbd7f6b73eb901d55bf828b4a3900f44a3ce652795
+#FROM rocker/geospatial@sha256:fb6f81285bf07dfe91beb5bbd7f6b73eb901d55bf828b4a3900f44a3ce652795
+# 2021-08-24
+FROM rocker/geospatial@sha256:a85cd535992bdeb79b166e51da0d563b4097c2b0948d4764f5d69f60c7e01de2
 
 # And set ENV for R! It doesn't read from the environment...
 RUN echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron
