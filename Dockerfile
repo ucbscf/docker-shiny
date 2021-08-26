@@ -1,168 +1,121 @@
-# SHA pin of rocker/geospatial:4.1.0, since rocker tags aren't immutable
-#FROM rocker/geospatial@sha256:fb6f81285bf07dfe91beb5bbd7f6b73eb901d55bf828b4a3900f44a3ce652795
-# 2021-08-24
-FROM rocker/geospatial@sha256:a85cd535992bdeb79b166e51da0d563b4097c2b0948d4764f5d69f60c7e01de2
+FROM buildpack-deps:focal-scm
 
-# And set ENV for R! It doesn't read from the environment...
-RUN echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron
+# Set up common env variables
+ENV TZ=America/Los_Angeles
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Add PATH to /etc/profile so it gets picked up by the terminal
-RUN echo "PATH=${PATH}" >> /etc/profile
-RUN echo "export PATH" >> /etc/profile
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
-# The `rsession` binary that is called by jupyter-rsession-proxy to start R
-# doesn't seem to start without this being explicitly set
-ENV LD_LIBRARY_PATH /usr/local/lib/R/lib
+ENV OUR_USER myshiny
+ENV OUR_UID 1000
 
-RUN apt-get update && \
-    apt-get -y --quiet --no-install-recommends install \
-	apt-transport-https \
-	build-essential \
-	ca-certificates \
-	curl \
-	debconf-utils \
-	libcurl4-openssl-dev \
-	libopenblas-base \
-	libreadline-dev \
-	libssl-dev \
-	lmodern \
-	;
+RUN adduser --disabled-password --gecos "Default user" ${OUR_USER}
+
+# Create user owned R libs dir
+# This lets users temporarily install packages
+ENV R_LIBS_USER /opt/r
+RUN install -d -o ${OUR_USER} -g ${OUR_USER} ${R_LIBS_USER}
+
+RUN apt-get -qq update --yes && \
+    apt-get -qq install --yes --no-install-recommends \
+            tar \
+            vim \
+            apt-transport-https \
+            build-essential \
+            ca-certificates \
+            curl \
+            debconf-utils \
+            libcurl4-openssl-dev \
+            libopenblas-base \
+            libreadline-dev \
+            libssl-dev \
+            lmodern \
+            sudo \
+            locales > /dev/null
+
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
+
+# Install R packages
+# Our pre-built R packages from rspm are built against system libs in focal
+# rstan takes forever to compile from source, and needs libnodejs
+# We don't want R 4.1 yet - the graphics protocol version it has is incompatible
+# with the version of RStudio we use. So we pin R to 4.0.5
+ENV R_VERSION=4.0.5-1.2004.0
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" > /etc/apt/sources.list.d/cran.list
+RUN apt-get update -qq --yes > /dev/null && \
+    apt-get install --yes -qq \
+    r-base-core=${R_VERSION} \
+    r-base-dev=${R_VERSION} \
+    r-cran-littler=0.3.11-1.2004.0 > /dev/null
 
 RUN curl -o /tmp/ss.deb https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.16.958-amd64.deb && \
     apt -y install /tmp/ss.deb && \
-	rm -f /tmp/ss.deb
+    rm -f /tmp/ss.deb
 RUN install -d /srv/shiny-server /etc/service/shiny
 
 # Let's open up the logs within the container.
 RUN install -d -o shiny -g shiny -m 777 \
-	/var/log/shiny-server \
-	/var/lib/shiny-server \
-	/var/run/shiny-server
+    /var/log/shiny-server \
+    /var/lib/shiny-server \
+    /var/run/shiny-server
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 
-# Check https://packagemanager.rstudio.com/client/#/repos/1/packages/A3 first.
-# Also installs the dependencies ‘dotCall64', ‘bitops', ‘err', ‘spam', ‘jpeg', ‘rappdirs', ‘checkmate', ‘renv', ‘bibtex'
-RUN install2.r --error \
-	assertthat \
-	backports \
-	BalancedSampling \
-	base64enc \
-	brew \
-	caTools \
-	checkr \
-	commonmark \
-	curl \
-	data.table \
-	devtools \
-	doParallel \
-	dplyr \
-	fields \
-	forcats \
-	foreach \
-	formatR \
-	ggdendro \
-	ggforce \
-	ggformula \
-	ggplot2 \
-	ggrepel \
-	ggridges \
-	ggstance \
-	git2r \
-	gridBase \
-	gridExtra \
-	gstat \
-	highr \
-	Hmisc \
-	hms \
-	htmlwidgets \
-	httpuv \
-	httr \
-	igraph \
-	irlba \
-	iterators \
-	knitr \
-	Lahman \
-	latticeExtra \
-	leaflet \
-	learnr \
-	lubridate \
-	magrittr \
-	manipulate \
-	maps \
-	maptools \
-	markdown \
-	memoise \
-	mosaic \
-	mosaicCore \
-	mosaicData \
-	ncdf4 \
-	nycflights13 \
-	openssl \
-	pkgmaker \
-	plogr \
-	png \
-	purrr \
-	raster \
-	RColorBrewer \
-	Rcpp \
-	RcppEigen \
-	RCurl \
-	readr \
-	registry \
-	remotes \
-	reshape \
-	reshape2 \
-	rgdal \
-	rgl \
-	rgeos \
-	rlang \
-	rmarkdown \
-	RMySQL \
-	rngtools \
-	roxygen2 \
-	rpart \
-	rpart.plot \
-	rprojroot \
-	RSQLite \
-	rstudioapi \
-	shiny \
-	shinydashboard \
-	sourcetools \
-	sp \
-	testthat \
-	tibble \
-	tidyr \
-	tidyverse \
-	tinytex \
-	tweenr \
-	uuid \
-	wesanderson \
-	whisker \
-	withr \
-	XML \
-	xml2 \
-	yaml \
-	;
+# Set CRAN mirror to rspm before we install anything
+COPY Rprofile.site /usr/lib/R/etc/Rprofile.site
 
-RUN Rscript -e "devtools::install_github('DataComputing/DataComputing', ref='d5cebba')"
+# R_LIBS_USER is set by default in /etc/R/Renviron, which RStudio loads.
+# We uncomment the default, and set what we wanna - so it picks up
+# the packages we install. Without this, RStudio doesn't see the packages
+# that R does.
+# Stolen from https://github.com/jupyterhub/repo2docker/blob/6a07a48b2df48168685bb0f993d2a12bd86e23bf/repo2docker/buildpacks/r.py
+# To try fight https://community.rstudio.com/t/timedatectl-had-status-1/72060,
+# which shows up sometimes when trying to install packages that want the TZ
+# timedatectl expects systemd running, which isn't true in our containers
+RUN sed -i -e '/^R_LIBS_USER=/s/^/#/' /etc/R/Renviron && \
+    echo "R_LIBS_USER=${R_LIBS_USER}" >> /etc/R/Renviron && \
+    echo "TZ=${TZ}" >> /etc/R/Renviron
 
-# koenvdberge; 2021-06-14
-# also used rgl, wesanderson, Hmisc
-RUN Rscript -e 'BiocManager::install("slingshot")'
-RUN Rscript -e 'remotes::install_github("daqana/dqshiny")'
+# package build dependencies
+# libglu1 is for Biobase
+# libglpk40 is for DataComputing
+RUN apt-get update -qq --yes > /dev/null && \
+    apt-get install --yes -qq \
+    libglpk40 \
+    libglpk-dev \
+    libglu1-mesa \
+    libglu1-mesa-dev
 
-## # 20180111
-## RUN Rscript -e "devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)"
-##
-# archived as of 2016-11-12
-## RUN Rscript -e "local_install(statisticalModeling)"
-##
-## RUN Rscript -e "devtools::install_github('MarkEdmondson1234/googleAuthR', ref = 'bdecbaf', upgrade_dependencies = FALSE)"
-##
+# function to install user libs
+COPY user-libs.R /tmp/user-libs.R
 
+# Install all our base R packages
+COPY install.R  /tmp/install.R
+RUN /tmp/install.R && \
+    rm -rf /tmp/downloaded_packages
+
+RUN mkdir -p /tmp/r-packages
+
+COPY r-packages/paciorek.r /tmp/r-packages/
+RUN r /tmp/r-packages/paciorek.r
+
+COPY r-packages/alucas.r /tmp/r-packages/
+RUN r /tmp/r-packages/alucas.r
+
+COPY r-packages/koenvdberge.r /tmp/r-packages/
+RUN r /tmp/r-packages/koenvdberge.r
+
+COPY r-packages/bosf.r /tmp/r-packages/
+RUN r /tmp/r-packages/bosf.r
+
+# cleanup
 RUN apt-get clean && \
-	rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 # Directory for shiny apps and static assets.
 VOLUME /srv/shiny-server

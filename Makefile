@@ -1,6 +1,9 @@
 DOCKER_IMAGE = ucbscf/docker-shiny
 SHA = $(shell git rev-parse --short HEAD)
 
+dev:
+	docker build -t $(DOCKER_IMAGE):dev .
+
 build:
 	docker build -t $(DOCKER_IMAGE):$(SHA) .
 
