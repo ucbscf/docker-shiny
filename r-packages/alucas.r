@@ -2,7 +2,8 @@
 
 source("/tmp/user-libs.R")
 
-devtools::install_github('DataComputing/DataComputing', ref='d5cebba')
+# disabled 20230206 - not on datahub either
+#devtools::install_github('DataComputing/DataComputing', ref='d5cebba')
 
 # 20180111
 # devtools::install_github('lionel-/redpen', ref = '659d571', upgrade_dependencies = FALSE)

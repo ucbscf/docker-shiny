@@ -83,13 +83,13 @@ RUN sed -i -e '/^R_LIBS_USER=/s/^/#/' /etc/R/Renviron && \
 
 # package build dependencies
 # libglu1 is for Biobase
-# libglpk40 is for DataComputing
+# libproj and libgdal are for paciorek's setVegComp-leaflet
 RUN apt-get update -qq --yes > /dev/null && \
     apt-get install --yes -qq \
-    libglpk40 \
-    libglpk-dev \
     libglu1-mesa \
-    libglu1-mesa-dev
+    libglu1-mesa-dev \
+    libproj15 \
+    libgdal26
 
 # function to install user libs
 COPY user-libs.R /tmp/user-libs.R
