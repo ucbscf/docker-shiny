@@ -2,7 +2,7 @@ version: '3'
 
 services:
   shiny:
-    image: ucbscf/docker-shiny:fecb040
+    image: ucbscf/docker-shiny:b71a1e8
     ports:
       - "8848-8853:3838"
     volumes:
