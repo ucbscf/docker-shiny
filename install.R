@@ -27,7 +27,7 @@ base_packages = c(
   "forcats", "0.5.0",
   "ggplot2", "3.3.3",
   "git2r", "0.27.1",
-  "gstat", "2.0-6",
+  "gstat", "2.1-0",
   "highr", "0.8",
   "hms", "0.5.3",
   "htmlwidgets", "1.5.3",
