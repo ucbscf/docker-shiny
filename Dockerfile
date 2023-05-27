@@ -33,6 +33,7 @@ RUN apt-get -qq update --yes && \
             libreadline-dev \
             libssl-dev \
             lmodern \
+            libglpk-dev \
             sudo \
             locales > /dev/null
 
