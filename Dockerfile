@@ -51,7 +51,8 @@ RUN apt-get update -qq --yes > /dev/null && \
     apt-get install --yes -qq \
     r-base-core=${R_VERSION} \
     r-base-dev=${R_VERSION} \
-    r-cran-littler=0.3.11-1.2004.0 > /dev/null
+    r-cran-littler=0.3.11-1.2004.0 > /dev/null && \
+    apt-mark hold r-base-core r-base-dev r-cran-littler
 
 RUN curl -o /tmp/ss.deb https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.16.958-amd64.deb && \
     apt -y install /tmp/ss.deb && \
